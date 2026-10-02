@@ -325,6 +325,10 @@ func (c *Conn) nextFrame() (int, MessageType, []byte, bool, bool, bool, error) {
 		l = int64(len(*pdata))
 	}
 	if l >= 2 {
+		// RFC6455 要求客户端发送掩码帧, 服务端发送非掩码帧.
+		if masked := ((*pdata)[1] & 0x80) != 0; masked == c.isClient {
+			return 0, 0, nil, false, false, false, ErrInvalidMaskDirection
+		}
 		opcode = MessageType((*pdata)[0] & 0xF)
 		res1 = int8((*pdata)[0]&0x40) != 0
 		res2 = int8((*pdata)[0]&0x20) != 0

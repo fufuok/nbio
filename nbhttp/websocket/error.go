@@ -10,6 +10,9 @@ import (
 )
 
 var (
+	// ErrInvalidMaskDirection 表示掩码方向不符合当前接收角色.
+	ErrInvalidMaskDirection = errors.New("websocket: invalid mask direction")
+
 	// ErrUpgradeTokenNotFound .
 	ErrUpgradeTokenNotFound = errors.New("websocket: the client is not using the websocket protocol: 'upgrade' token not found in 'Connection' header")
 
