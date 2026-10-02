@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lesismal/nbio/mempool"
+	"github.com/fufuok/nbio/mempool"
 )
 
 var (

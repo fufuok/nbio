@@ -15,8 +15,8 @@ import (
 	"sync"
 	"unsafe"
 
-	"github.com/lesismal/nbio/logging"
-	"github.com/lesismal/nbio/mempool"
+	"github.com/fufuok/nbio/logging"
+	"github.com/fufuok/nbio/mempool"
 )
 
 const (

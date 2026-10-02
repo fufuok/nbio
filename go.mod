@@ -1,4 +1,4 @@
-module github.com/lesismal/nbio
+module github.com/fufuok/nbio
 
 go 1.16
 

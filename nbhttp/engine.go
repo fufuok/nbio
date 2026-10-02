@@ -16,12 +16,12 @@ import (
 	"unicode/utf8"
 	"unsafe"
 
+	"github.com/fufuok/nbio"
+	"github.com/fufuok/nbio/lmux"
+	"github.com/fufuok/nbio/logging"
+	"github.com/fufuok/nbio/mempool"
+	"github.com/fufuok/nbio/taskpool"
 	"github.com/lesismal/llib/std/crypto/tls"
-	"github.com/lesismal/nbio"
-	"github.com/lesismal/nbio/lmux"
-	"github.com/lesismal/nbio/logging"
-	"github.com/lesismal/nbio/mempool"
-	"github.com/lesismal/nbio/taskpool"
 )
 
 const (

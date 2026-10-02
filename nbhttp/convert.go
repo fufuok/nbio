@@ -7,8 +7,8 @@ import (
 	"net"
 	"unsafe"
 
+	"github.com/fufuok/nbio"
 	ltls "github.com/lesismal/llib/std/crypto/tls"
-	"github.com/lesismal/nbio"
 )
 
 const (
@@ -26,7 +26,7 @@ const (
 )
 
 // We can use this array-value as map key to reduce gc cost.
-// Ref: https://github.com/lesismal/nbio/pull/304#issuecomment-1583880587
+// Ref: https://github.com/fufuok/nbio/pull/304#issuecomment-1583880587
 type connValue [connValueSize]byte
 
 // Convert net.Conn to array value.

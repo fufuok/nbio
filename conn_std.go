@@ -16,7 +16,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/lesismal/nbio/timer"
+	"github.com/fufuok/nbio/timer"
 )
 
 // Conn wraps net.Conn.

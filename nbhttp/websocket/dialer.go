@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fufuok/nbio"
+	"github.com/fufuok/nbio/nbhttp"
 	"github.com/lesismal/llib/std/crypto/tls"
-	"github.com/lesismal/nbio"
-	"github.com/lesismal/nbio/nbhttp"
 )
 
 const (

@@ -8,10 +8,10 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/fufuok/nbio/nbhttp"
+	"github.com/fufuok/nbio/nbhttp/websocket"
+	"github.com/fufuok/nbio/taskpool"
 	"github.com/lesismal/llib/std/crypto/tls"
-	"github.com/lesismal/nbio/nbhttp"
-	"github.com/lesismal/nbio/nbhttp/websocket"
-	"github.com/lesismal/nbio/taskpool"
 )
 
 //go:norace

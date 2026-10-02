@@ -6,7 +6,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/lesismal/nbio/logging"
+	"github.com/fufuok/nbio/logging"
 )
 
 type event struct {
@@ -90,7 +90,7 @@ func (lm *ListenerMux) Start() {
 						}
 						listenerA.chEvent <- event{err: err, conn: c}
 						listenerB.chEvent <- event{err: err, conn: c}
-						
+
 						// Exit the loop after a non recoverable error
 						return
 					}

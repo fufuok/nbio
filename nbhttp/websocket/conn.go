@@ -19,9 +19,9 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/lesismal/nbio/logging"
-	"github.com/lesismal/nbio/mempool"
-	"github.com/lesismal/nbio/nbhttp"
+	"github.com/fufuok/nbio/logging"
+	"github.com/fufuok/nbio/mempool"
+	"github.com/fufuok/nbio/nbhttp"
 )
 
 const (

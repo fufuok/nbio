@@ -10,7 +10,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/lesismal/nbio/logging"
+	"github.com/fufuok/nbio/logging"
 )
 
 // ConnType is used to identify different types of Conn.

@@ -13,9 +13,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lesismal/nbio/logging"
-	"github.com/lesismal/nbio/mempool"
-	"github.com/lesismal/nbio/timer"
+	"github.com/fufuok/nbio/logging"
+	"github.com/fufuok/nbio/mempool"
+	"github.com/fufuok/nbio/timer"
 )
 
 // Start inits and starts pollers.

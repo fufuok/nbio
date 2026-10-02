@@ -18,7 +18,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/lesismal/nbio/logging"
+	"github.com/fufuok/nbio/logging"
 )
 
 const (

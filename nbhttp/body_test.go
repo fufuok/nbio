@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/lesismal/nbio/mempool"
+	"github.com/fufuok/nbio/mempool"
 )
 
 func TestBodyReaderPool(t *testing.T) {

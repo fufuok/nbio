@@ -12,10 +12,10 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/lesismal/nbio/logging"
-	"github.com/lesismal/nbio/mempool"
-	"github.com/lesismal/nbio/taskpool"
-	"github.com/lesismal/nbio/timer"
+	"github.com/fufuok/nbio/logging"
+	"github.com/fufuok/nbio/mempool"
+	"github.com/fufuok/nbio/taskpool"
+	"github.com/fufuok/nbio/timer"
 )
 
 const (
