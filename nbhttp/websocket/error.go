@@ -10,6 +10,9 @@ import (
 )
 
 var (
+	// ErrInvalidMaskDirection reports a mask bit that does not match the endpoint role.
+	ErrInvalidMaskDirection = errors.New("websocket: invalid mask direction")
+
 	// ErrUpgradeTokenNotFound .
 	ErrUpgradeTokenNotFound = errors.New("websocket: the client is not using the websocket protocol: 'upgrade' token not found in 'Connection' header")
 

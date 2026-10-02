@@ -325,6 +325,10 @@ func (c *Conn) nextFrame() (int, MessageType, []byte, bool, bool, bool, error) {
 		l = int64(len(*pdata))
 	}
 	if l >= 2 {
+		// RFC 6455 requires masked client-to-server and unmasked server-to-client frames.
+		if masked := ((*pdata)[1] & 0x80) != 0; masked == c.isClient {
+			return 0, 0, nil, false, false, false, ErrInvalidMaskDirection
+		}
 		opcode = MessageType((*pdata)[0] & 0xF)
 		res1 = int8((*pdata)[0]&0x40) != 0
 		res2 = int8((*pdata)[0]&0x20) != 0
