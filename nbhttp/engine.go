@@ -47,6 +47,10 @@ const (
 	// DefaultHTTPReadLimit .
 	DefaultHTTPReadLimit = 1024 * 1024 * 64
 
+	// DefaultHTTPHeaderSize limits the combined size of a message's start line,
+	// headers, and trailers, including terminating CRLFs, independently of WebSocket frames.
+	DefaultHTTPHeaderSize = 64 * 1024
+
 	// DefaultMaxWebsocketFramePayloadSize .
 	DefaultMaxWebsocketFramePayloadSize = 1024 * 32
 
@@ -112,6 +116,12 @@ type Config struct {
 
 	// ReadLimit represents the max size for parser reading, it's set to 64M by default.
 	ReadLimit int
+
+	// MaxHTTPHeaderSize limits the combined size of a message's start line,
+	// headers, and trailers, including terminating CRLFs. Body bytes and chunk
+	// framing are excluded. NewEngine replaces nonpositive values with
+	// DefaultHTTPHeaderSize; a directly constructed Engine can leave it disabled.
+	MaxHTTPHeaderSize int
 
 	// MaxHTTPBodySize represents the max size of HTTP body for parser reading.
 	MaxHTTPBodySize int
@@ -1019,6 +1029,9 @@ func NewEngine(conf Config) *Engine {
 	}
 	if conf.ReadLimit <= 0 {
 		conf.ReadLimit = DefaultHTTPReadLimit
+	}
+	if conf.MaxHTTPHeaderSize <= 0 {
+		conf.MaxHTTPHeaderSize = DefaultHTTPHeaderSize
 	}
 	if conf.KeepaliveTime <= 0 {
 		conf.KeepaliveTime = DefaultKeepaliveTime
