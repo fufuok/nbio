@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 	"unicode/utf8"
 	"unsafe"
@@ -244,7 +245,7 @@ type Engine struct {
 
 	CheckUtf8 func(data []byte) bool
 
-	shutdown bool
+	shutdown uint32
 
 	listenerMux *lmux.ListenerMux
 	listeners   []net.Listener
@@ -344,9 +345,9 @@ func (e *Engine) listen(ln net.Listener, tlsConfig *tls.Config, addConn func(*Co
 			// ln.Close()
 			e.Done()
 		}()
-		for !e.shutdown {
+		for !e.isShutdown() {
 			conn, err := ln.Accept()
-			if err == nil && !e.shutdown {
+			if err == nil && !e.isShutdown() {
 				addConn(&Conn{Conn: conn}, tlsConfig, decrease)
 			} else {
 				var ne net.Error
@@ -354,7 +355,7 @@ func (e *Engine) listen(ln net.Listener, tlsConfig *tls.Config, addConn func(*Co
 					logging.Error("Accept failed: timeout error, retrying...")
 					time.Sleep(time.Second / 20)
 				} else {
-					if !e.shutdown {
+					if !e.isShutdown() {
 						logging.Error("Accept failed: %v, exit...", err)
 					}
 					if e._onAcceptError != nil {
@@ -536,7 +537,7 @@ func (e *Engine) Start() error {
 //
 //go:norace
 func (e *Engine) Stop() {
-	e.shutdown = true
+	atomic.StoreUint32(&e.shutdown, 1)
 
 	if e.Cancel != nil {
 		e.Cancel()
@@ -550,7 +551,7 @@ func (e *Engine) Stop() {
 //
 //go:norace
 func (e *Engine) Shutdown(ctx context.Context) error {
-	e.shutdown = true
+	atomic.StoreUint32(&e.shutdown, 1)
 	e.stopListeners()
 
 	if e.Cancel != nil {
@@ -577,6 +578,11 @@ Exit:
 	err := e.Engine.Shutdown(ctx)
 	logging.Info("NBIO[%v] shutdown", e.Engine.Name)
 	return err
+}
+
+// isShutdown synchronizes listener reads with Stop and Shutdown updates.
+func (e *Engine) isShutdown() bool {
+	return atomic.LoadUint32(&e.shutdown) != 0
 }
 
 // DataHandler .
