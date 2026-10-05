@@ -47,6 +47,10 @@ const (
 	// DefaultHTTPReadLimit .
 	DefaultHTTPReadLimit = 1024 * 1024 * 64
 
+	// DefaultHTTPHeaderSize limits each message's start line, headers, and
+	// trailers, including their terminating CRLFs, independently of body bytes.
+	DefaultHTTPHeaderSize = 64 * 1024
+
 	// DefaultMaxWebsocketFramePayloadSize .
 	DefaultMaxWebsocketFramePayloadSize = 1024 * 32
 
@@ -112,6 +116,13 @@ type Config struct {
 
 	// ReadLimit represents the max size for parser reading, it's set to 64M by default.
 	ReadLimit int
+
+	// MaxHTTPHeaderSize limits the combined size of a message's start line,
+	// headers, and trailers, including terminating CRLFs. Body bytes, chunk
+	// framing, and upgraded WebSocket frames are excluded. NewEngine replaces
+	// nonpositive values with DefaultHTTPHeaderSize; a directly constructed
+	// Engine can leave this limit disabled.
+	MaxHTTPHeaderSize int
 
 	// MaxHTTPBodySize represents the max size of HTTP body for parser reading.
 	MaxHTTPBodySize int
@@ -896,6 +907,8 @@ func (engine *Engine) readConnBlocking(conn *Conn, parser *Parser, decrease func
 	defer func() {
 		readBufferPool.Free(pbuf)
 		if !conn.Trasfered {
+			// HTTP processor cleanup releases resources without closing the socket.
+			_ = conn.Close()
 			parserCloser.CloseAndClean(err)
 		}
 		engine.mux.Lock()
@@ -915,7 +928,7 @@ func (engine *Engine) readConnBlocking(conn *Conn, parser *Parser, decrease func
 		if err != nil {
 			return
 		}
-		_ = parserCloser.Parse((*pbuf)[:n])
+		err = parserCloser.Parse((*pbuf)[:n])
 		if conn.Trasfered {
 			parser.onClose = nil
 			parser.CloseAndClean(nil)
@@ -926,6 +939,10 @@ func (engine *Engine) readConnBlocking(conn *Conn, parser *Parser, decrease func
 			parser.onClose = nil
 			parser.CloseAndClean(nil)
 			parser = nil
+		}
+		// Transfer upgrade cleanup before returning an error from the same read.
+		if err != nil {
+			return
 		}
 	}
 }
@@ -1019,6 +1036,9 @@ func NewEngine(conf Config) *Engine {
 	}
 	if conf.ReadLimit <= 0 {
 		conf.ReadLimit = DefaultHTTPReadLimit
+	}
+	if conf.MaxHTTPHeaderSize <= 0 {
+		conf.MaxHTTPHeaderSize = DefaultHTTPHeaderSize
 	}
 	if conf.KeepaliveTime <= 0 {
 		conf.KeepaliveTime = DefaultKeepaliveTime

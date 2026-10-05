@@ -69,6 +69,7 @@ type Parser struct {
 	trailer       http.Header
 	contentLength int
 	chunkSize     int
+	headerBytes   int
 
 	state        int8
 	chunked      bool
@@ -198,6 +199,12 @@ UPGRADER:
 
 	var c byte
 	for i := offset; i < len(data); i++ {
+		if p.ParserCloser == nil && p.isHeaderState() {
+			p.headerBytes++
+			if p.Engine != nil && p.Engine.MaxHTTPHeaderSize > 0 && p.headerBytes > p.Engine.MaxHTTPHeaderSize {
+				return ErrTooLong
+			}
+		}
 		if p.ParserCloser != nil {
 			p.Processor.Clean(p)
 			goto UPGRADER
@@ -812,11 +819,32 @@ func (p *Parser) handleMessage() {
 	p.chunked = false
 	p.header = nil
 	p.trailer = nil
+	p.headerBytes = 0
 
 	if !p.isClient {
 		p.nextState(stateMethodBefore)
 	} else {
 		p.nextState(stateClientProtoBefore)
+	}
+}
+
+// isHeaderState identifies bytes in the start line, headers, and trailers,
+// including their terminating CRLFs. Body bytes and chunk framing are excluded.
+func (p *Parser) isHeaderState() bool {
+	switch p.state {
+	case stateMethodBefore, stateMethod, statePathBefore, statePath,
+		stateProtoBefore, stateProto, stateProtoLF,
+		stateClientProtoBefore, stateClientProto, stateStatusCodeBefore,
+		stateStatusCode, stateStatusBefore, stateStatus, stateStatusLF,
+		stateHeaderKeyBefore, stateHeaderValueLF, stateHeaderKey,
+		stateHeaderValueBefore, stateHeaderValue,
+		stateHeaderOverLF,
+		stateBodyTrailerHeaderValueLF, stateBodyTrailerHeaderKeyBefore,
+		stateBodyTrailerHeaderKey, stateBodyTrailerHeaderValueBefore,
+		stateBodyTrailerHeaderValue, stateTailCR, stateTailLF:
+		return true
+	default:
+		return false
 	}
 }
 
