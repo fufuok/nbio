@@ -912,6 +912,8 @@ func (engine *Engine) readConnBlocking(conn *Conn, parser *Parser, decrease func
 	defer func() {
 		readBufferPool.Free(pbuf)
 		if !conn.Trasfered {
+			// Processor cleanup does not close the transport owned by this read loop.
+			_ = conn.Close()
 			parserCloser.CloseAndClean(err)
 		}
 		engine.mux.Lock()
@@ -931,7 +933,7 @@ func (engine *Engine) readConnBlocking(conn *Conn, parser *Parser, decrease func
 		if err != nil {
 			return
 		}
-		_ = parserCloser.Parse((*pbuf)[:n])
+		err = parserCloser.Parse((*pbuf)[:n])
 		if conn.Trasfered {
 			parser.onClose = nil
 			parser.CloseAndClean(nil)
@@ -942,6 +944,9 @@ func (engine *Engine) readConnBlocking(conn *Conn, parser *Parser, decrease func
 			parser.onClose = nil
 			parser.CloseAndClean(nil)
 			parser = nil
+		}
+		if err != nil {
+			return
 		}
 	}
 }

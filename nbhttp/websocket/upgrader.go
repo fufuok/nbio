@@ -410,12 +410,12 @@ func (u *Upgrader) Upgrade(w http.ResponseWriter, r *http.Request, responseHeade
 						_, nread, errRead = vt.AppendAndRead(readed, buffer)
 						readed = nil
 						if errRead != nil {
-							_ = c.CloseWithError(err)
+							_ = c.CloseWithError(errRead)
 							return
 						}
 						if nread > 0 {
 							errRead = wsc.Parse(buffer[:nread])
-							if err != nil {
+							if errRead != nil {
 								logging.Debug("websocket Conn Parse failed: %v", errRead)
 								_ = c.CloseWithError(errRead)
 								return

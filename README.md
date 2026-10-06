@@ -12,15 +12,15 @@
 [5]: https://img.shields.io/badge/license-MIT-blue.svg
 [6]: LICENSE
 [7]: https://img.shields.io/badge/go-%3E%3D1.16-30dff3?style=flat-square&logo=go
-[8]: https://github.com/lesismal/nbio
-[9]: https://img.shields.io/github/actions/workflow/status/lesismal/nbio/autobahn.yml?branch=master&style=flat-square&logo=github-actions
-[10]: https://github.com/lesismal/nbio/actions?query=workflow%3autobahn
-[11]: https://goreportcard.com/badge/github.com/lesismal/nbio
-[12]: https://goreportcard.com/report/github.com/lesismal/nbio
-[13]: https://codecov.io/gh/lesismal/nbio/branch/master/graph/badge.svg
-[14]: https://codecov.io/gh/lesismal/nbio
-[15]: https://godoc.org/github.com/lesismal/nbio?status.svg
-[16]: https://godoc.org/github.com/lesismal/nbio
+[8]: https://github.com/fufuok/nbio
+[9]: https://img.shields.io/github/actions/workflow/status/fufuok/nbio/autobahn.yml?branch=master&style=flat-square&logo=github-actions
+[10]: https://github.com/fufuok/nbio/actions?query=workflow%3autobahn
+[11]: https://goreportcard.com/badge/github.com/fufuok/nbio
+[12]: https://goreportcard.com/report/github.com/fufuok/nbio
+[13]: https://codecov.io/gh/fufuok/nbio/branch/master/graph/badge.svg
+[14]: https://codecov.io/gh/fufuok/nbio
+[15]: https://godoc.org/github.com/fufuok/nbio?status.svg
+[16]: https://godoc.org/github.com/fufuok/nbio
 
 
 ## 📢 New Project: [fib](https://github.com/lesismal/fib)
@@ -134,7 +134,7 @@ package main
 import (
 	"log"
 
-	"github.com/lesismal/nbio"
+	"github.com/fufuok/nbio"
 )
 
 func main() {
@@ -307,7 +307,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/lesismal/nbio/nbhttp/websocket"
+	"github.com/fufuok/nbio/nbhttp/websocket"
 )
 
 var (
@@ -389,4 +389,4 @@ Thanks Everyone:
 
 ## Star History
 
-[![Star History Chart](https://star-history.dera.page/svg?repos=lesismal/nbio&type=Date)](https://star-history.dera.page/#lesismal/nbio&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=fufuok/nbio&type=Date)](https://star-history.dera.page/#fufuok/nbio&Date)

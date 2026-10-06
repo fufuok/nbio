@@ -176,7 +176,7 @@ func TestTrailerHeaderBudgetBoundary(t *testing.T) {
 // TestHeaderBudgetClosesBeforeHandler checks that oversized unfinished headers
 // close a real TCP connection before the handler can run.
 func TestHeaderBudgetClosesBeforeHandler(t *testing.T) {
-	for _, mode := range []int{IOModNonBlocking} {
+	for _, mode := range []int{IOModNonBlocking, IOModBlocking} {
 		t.Run(fmt.Sprintf("mode=%d", mode), func(t *testing.T) {
 			var calls int32
 			closed := make(chan error, 1)
@@ -194,7 +194,7 @@ func TestHeaderBudgetClosesBeforeHandler(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer conn.Close()
+			defer func() { _ = conn.Close() }()
 			if err := conn.SetDeadline(time.Now().Add(3 * time.Second)); err != nil {
 				t.Fatal(err)
 			}
@@ -216,6 +216,13 @@ func TestHeaderBudgetClosesBeforeHandler(t *testing.T) {
 				}
 			case <-time.After(3 * time.Second):
 				t.Fatal("oversized unfinished headers did not close connection")
+			}
+			// The close callback alone does not prove that the transport was released.
+			var response [1]byte
+			if n, err := conn.Read(response[:]); err == nil || n != 0 {
+				t.Fatalf("read after rejection = (%d, %v), want a closed connection", n, err)
+			} else if timeout, ok := err.(net.Error); ok && timeout.Timeout() {
+				t.Fatalf("connection remained open after rejection: %v", err)
 			}
 			if calls := atomic.LoadInt32(&calls); calls != 0 {
 				t.Fatalf("handler called %d times", calls)
